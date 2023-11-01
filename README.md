@@ -1,12 +1,12 @@
 # proyecto_TMDB
 <div style="text-align: justify;">
-A continuación se provee documentación sobre cada ENDPOINT implementado. Se especificará un body de ejemplo para cada uno.
+A continuación se provee documentación sobre cada ENDPOINT implementado. Se especificará un body de ejemplo para cada uno. La API desarrollada escucha solicitudes por el puerto 8081.
 </div>
 
 ## Registrar usuario
 
 <div style="text-align: justify;">
-ENDPOINT tipo POST utilizado para registrar un nuevo usuario en el sistema. Los datos solicitados son un correo electrónico, su nombre, apellido y contraseña.
+ENDPOINT tipo POST utilizado para registrar un nuevo usuario en el sistema. Los datos solicitados son un correo electrónico, su nombre, apellido y contraseña. El ENDPOINT será consumido por la URL '/registrar'.
 
 Un posible body de la llamada HTTP del cliente es el siguiente.
 </div>
@@ -29,7 +29,7 @@ Luego de validado el nuevo usuario, se le asignará una apiKey estática que ser
 ## Autenticar usuario
 
 <div style="text-align: justify;">
-ENDPOINT tipo POST utilizado para obtener el apiKey de un usuario registrado.
+ENDPOINT tipo POST utilizado para obtener el apiKey de un usuario registrado. El ENDPOINT será consumido por la URL '/autenticar'.
 
 Un body ejemplo para la llamada HTTP del cliente se proporciona a continuación. Un usuario será autenticado si este se registró previamente y si la contrsaeña coincide.
 </div>
@@ -50,7 +50,7 @@ Todos los ENDPOINTS que requieran autorización deben recibir el header 'token' 
 ## Obtener películas
 
 <div style="text-align: justify;">
-ENDPOINT tipo GET utilizado para realizar una búsqueda de películas a la API de TMDB (The Movie DataBase).
+ENDPOINT tipo GET utilizado para realizar una búsqueda de películas a la API de TMDB (The Movie DataBase). El ENDPOINT será consumido por la URL '/buscar'.
 
 Un posible body de la llamada HTTP del cliente es el siguiente. En este se proporciona el email del usuario y la keyword de búsqueda, siendo el título de la película.
 </div>
@@ -82,7 +82,7 @@ Este ENDPOINT requiere autenticación previa, por lo que el header 'token' con l
 ## Agregar película a favoritos
 
 <div style="text-align: justify;">
-ENDPOINT tipo POST utilizado para agregar una película obtenida de la búsqueda a la lista de favoritos del usuario.
+ENDPOINT tipo POST utilizado para agregar una película obtenida de la búsqueda a la lista de favoritos del usuario. El ENDPOINT será consumido por la URL '/agregarFavorito'.
 
 Un posible body de la llamada HTTP del cliente es el siguiente. En este se especifican el email del usuario y el id de la película a guardar en sus favoritos.
 </div>
@@ -103,7 +103,7 @@ Este ENDPOINT requiere autenticación previa, por lo que el header 'token' con l
 ## Obtener películas favoritas
 
 <div style="text-align: justify;">
-ENDPOINT tipo GET utilizado para obtener del archivo favoritos.txt la lista de películas favoritas de un usuario.
+ENDPOINT tipo GET utilizado para obtener del archivo favoritos.txt la lista de películas favoritas de un usuario. El ENDPOINT será consumido por la URL '/favoritos'.
 
 Un posible body de la llamada HTTP del cliente es el siguiente. Solamente el email es necesario en esta consulta.
 </div>
