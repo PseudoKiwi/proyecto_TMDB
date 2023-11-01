@@ -231,9 +231,9 @@ function tmdbFind(params) {
                 const responseJSON = JSON.parse(Buffer.concat(data).toString());
                 resolve(responseJSON);
             });
-        }).on('error', (err) => {
+        }).on('error', (error) => {
             // Si ocurre un error, rechazo la promesa con el error
-            reject(err);
+            reject(error);
         });
     });
 }
@@ -310,14 +310,24 @@ function obtenerFavoritos(params) {
         const { email, token } = params;
 
         // Valido que el token corresponda al usuario
-        validacionToken({email: email, token: token}).then( validado => {
+        validacionToken({email: email, token: token}).then((validado, error) => {
+
+            if (error) {
+                reject(error);
+                return;
+            }
             
             // De corresponderse, devuelvo las películas favoritas del usuario
             // De lo contrario, retorno error
             if (validado) {
 
                 // En favoritas guardo la lista de películas favoritas del usuario
-                favoritosUsuario({email: email}).then(favoritas => {
+                favoritosUsuario({email: email}).then((favoritas, error) => {
+
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
 
                     // Modifico los elementos de favoritas agregando el campo suggestionForTodayScore a cada elemento
                     // suggestionForTodayScore es un número real aleatorio entre 0 y 99 
@@ -328,6 +338,8 @@ function obtenerFavoritos(params) {
                     .sort((a, b) => {
                         return b.suggestionForTodayScore - a.suggestionForTodayScore;
                     }));
+                }).catch((error) => {
+                    reject(error); // Propaga errores desde tmdbFind
                 });
             } else {
                 // Error de token incorrecto
@@ -341,13 +353,18 @@ function obtenerFavoritos(params) {
 }
 
 // Función que busca las películas buscadas por keyword por un usuario autenticado
-async function obtenerBusqueda(params) {
+function obtenerBusqueda(params) {
 
     return new Promise((resolve, reject) => {
         const { email, token, apiKey, keyword } = params;
 
         // Valido que el token corresponda al usuario
-        validacionToken({email: email, token: token}).then( validado => {
+        validacionToken({email: email, token: token}).then((validado, error) => {
+
+            if (error) {
+                reject(error);
+                return;
+            }
             
             // De corresponderse, devuelvo las películas favoritas del usuario
             // De lo contrario, retorno error
@@ -357,7 +374,12 @@ async function obtenerBusqueda(params) {
                 if (keyword === '') {
                     
                     // Realizo la solicitud de los discover
-                    tmdbDiscover({apiKey: apiKey}).then(resultado => {
+                    tmdbDiscover({apiKey: apiKey}).then((resultado, error) => {
+
+                        if (error) {
+                            reject(error);
+                            return;
+                        }
 
                         // Modifico los elementos de resultado agregando el campo suggestionScore a cada elemento
                         // suggestionScore es un número real aleatorio entre 0 y 99 
@@ -367,12 +389,19 @@ async function obtenerBusqueda(params) {
                         }).sort((a, b) => {
                             return b.suggestionScore - a.suggestionScore;
                         }));
+                    }).catch((error) => {
+                        reject(error); // Propaga errores desde tmdbFind
                     });
 
                 } else {
                     
                     // Realizo la solicitud de la búsqueda por keyword
-                    tmdbSearch({apiKey: apiKey, keyword: keyword}).then(resultado => {
+                    tmdbSearch({apiKey: apiKey, keyword: keyword}).then((resultado, error) => {
+
+                        if (error) {
+                            reject(error);
+                            return;
+                        }
 
                         // Modifico los elementos de resultado agregando el campo suggestionScore a cada elemento
                         // suggestionScore es un número real aleatorio entre 0 y 99 
@@ -382,6 +411,8 @@ async function obtenerBusqueda(params) {
                         }).sort((a, b) => {
                             return b.suggestionScore - a.suggestionScore;
                         }));
+                    }).catch((error) => {
+                        reject(error); // Propaga errores desde tmdbFind
                     });
                 };
                 
@@ -397,19 +428,31 @@ async function obtenerBusqueda(params) {
 }
 
 // Función que agrega a favoritos una película seleccionada por un usuario autenticado
-async function agregarFavorito(params) {
+function agregarFavorito(params) {
     return new Promise((resolve, reject) => {
 
         const {email, token, apiKey, id} = params
 
         // Valido que el token corresponda al usuario
-        validacionToken({email: email, token: token}).then(validado => {
+        validacionToken({email: email, token: token}).then((validado, error) => {
+
+            if (error) {
+                reject(error);
+                return;
+            }
+
             // De corresponderse, devuelvo las películas favoritas del usuario
             // De lo contrario, retorno error
             if (validado) {  
 
                 // Realizo la solicitud de la búsqueda por id
-                tmdbFind({apiKey: apiKey, id: id}).then(resultado => {
+                tmdbFind({apiKey: apiKey, id: id}).then((resultado, error) => {
+
+                    if (error) {
+                        reject(error);
+                        return;
+                    }
+
                     resultado.email = email;        // Agrego el email del usuario
                     resultado.addedAt = new Date(); // Agrego el campo addedAt con la fecha actual
                     
@@ -450,6 +493,8 @@ async function agregarFavorito(params) {
                             reject(new Error("Favorito ya existente"))
                         }
                     });
+                }).catch((error) => {
+                    reject(error); // Propaga errores desde tmdbFind
                 });
             } else {
                 // Error de token incorrecto
